@@ -1,0 +1,9 @@
+Memory.OwnedRooms = 
+    {
+        W6N1: {
+            name: Game.rooms['W6N1'],
+        },
+        W7N1: {
+            name: Game.rooms['W7N1'],
+       }
+    };
