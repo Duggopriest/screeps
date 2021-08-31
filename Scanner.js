@@ -1,27 +1,42 @@
+var SetMeme = require('SetMem');
+var Funs = require('fun');
 var Scanner =
 {
     /** @param {Creep} creep **/
     run: function (creep) {
-        if (creep) {
-            Memory.Sources          = creep.room.find(FIND_SOURCES);
-            creep.memory.Harvesters = _.filter(Game.creeps, (creep) => creep.memory.role == 'harvester', (creep) => creep.memory.CMS == 'noTarget');
-
-            if (Memory.OwnedRooms.W6N1.Scanner == 'E')
+        if (creep) 
+        {
+            if(creep.memory.targRm == 'E')
             {
-                Memory.OwnedRooms.W6N1.Scanner = creep;
-                creep.memory.targRm = Memory.OwnedRooms.W6N1;
+                for (var j = 0; j < 4; j++)
+                {
+                    if (((Memory.OwnedRooms[j].Scanner == 'E' || !Memory.OwnedRooms[j].Scanner) && creep.memory.targRm == 'E') || Memory.OwnedRooms[j].Scanner == creep.name)
+                    {
+                        creep.memory.targRm = Memory.OwnedRooms[j].name;
+                        Memory.OwnedRooms[j].Scanner = creep.name;
+                        creep.say('f ' + Memory.OwnedRooms[j].name);
+                        break;
+                    }
+                }
             }
-            else if (Memory.OwnedRooms.W7N1.Scanner == 'E')
+            
+            Funs.Move(creep, (42, 9));
+            if (creep.room.name == creep.memory.targRm)
             {
-                Memory.OwnedRooms.W7N1.Scanner = creep;
-                creep.memory.targRm = Memory.OwnedRooms.W7N1;
+                creep.moveTo(44, 9);
+                var sour = creep.room.find(FIND_SOURCES);
+                
+                for (var j = 0; j < sour.length; j++)
+                {
+                    //console.log(sour[j].id);
+                    SetMeme.AddS(creep, sour[j].id);
+                }
             }
 
-            if (creep.room.name != creep.memory.targRm)
+            //----------setting storage------------
+            if(creep.room.name == 'W6N1')
             {
-                var exit = creep.room.findExitTo(creep.memory.targRm);
-
-                creep.moveTo(creep.pos.findClosestByRange(exit));
+                Memory.Ext = creep.room.find(FIND_MY_STRUCTURES, {filter: (s) => { return (s.structureType == 'extension'); }});
             }
         }
 

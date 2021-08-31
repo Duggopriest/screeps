@@ -1,3 +1,4 @@
+var fun = require('fun');
 var Rep =
 {
 
@@ -5,45 +6,38 @@ var Rep =
     run: function (creep) {
         if (creep) {
             var a = 0;
-            var sources = creep.room.find(FIND_MY_STRUCTURES, {
-                filter: (s) => { return (s.hits > 500); }});
+            var sources = creep.room.find(FIND_STRUCTURES, { filter: (structure) => structure.hits < (structure.hitsMax) });
+            //console.log(sources[0].id);
             var SortedSources = _.sortBy(sources, s => creep.pos.getRangeTo(s));
-            //var SortedSources = creep.pos.findClosestByRange();
             var targetSource;
-            var reps = _.filter(Game.creeps, (creep) => creep.memory.role == 'rep');
-
+            //var reps = _.filter(Game.creeps, (creep) => creep.memory.role == 'rep');
+            targetSource = SortedSources[0];
+            /*
             for (var i = 0; i < reps.length; i++) {
                 targetSource = SortedSources[a];
                 if (reps[i].memory.CMS == targetSource.id && reps[i].name != creep.name) {
                     i = 0;
                     a++;
                 }
-            }
+            }*/
             creep.memory.CMS = targetSource.id;
-            var harvesters = _.filter(Game.creeps, (creep) => creep.memory.role == 'harvester'); //get a array of harvesters by looking at thier memory.role
-            var cars = _.filter(Game.creeps, (creep) => creep.memory.role == 'car');
-            var bobs = _.filter(Game.creeps, (creep) => creep.memory.role == 'bob');
-
-            for (var name in Game.spawns) {
-                var sp = Game.spawns[name];
-                var EC = sp.energyCapacity;
-                var CE = sp.energy;
-            }
-
-            if (creep.store.getFreeCapacity() == 50) {
+            
+            if (creep.store.getUsedCapacity() == 0) {
                 creep.memory.state = false;
             }
-            else if (creep.store.getFreeCapacity() == 0 && (harvesters.length >= 1 && cars.length >= 1)) {
+            else if (creep.store.getUsedCapacity() >= creep.store.getCapacity()) {
                 creep.memory.state = true;
             }
-
-            if (creep.memory.state == true) {
+            
+            if (creep.memory.state == true) 
+            {
                 creep.moveTo(targetSource);
-                creep.build(targetSource)
+                creep.repair(targetSource);
+                creep.say('rep');
             }
             else if (creep.memory.state == false) {
-                creep.moveTo(Game.spawns['Spawn1']);
-                creep.withdraw(Game.spawns['Spawn1'], RESOURCE_ENERGY)
+                creep.moveTo(fun.ClosestSto(creep));
+                creep.withdraw(fun.ClosestSto(creep), RESOURCE_ENERGY);
             }
         }
 

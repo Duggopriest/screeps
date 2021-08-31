@@ -1,3 +1,4 @@
+var fun = require('fun');
 var Bob =
 {
 
@@ -29,10 +30,10 @@ var Bob =
             
             var sourses = creep.room.find(FIND_SOURCES);
 
-            if (creep.store.getFreeCapacity() == 50) {
+            if (creep.store.getUsedCapacity() == 0) {
                 creep.memory.state = false;
             }
-            else if (creep.store.getFreeCapacity() == 0 && (harvesters.length == sourses.length && cars.length == sourses.length)) {
+            else if (creep.store.getUsedCapacity() >= creep.store.getCapacity()) {
                 creep.memory.state = true;
             }
 
@@ -41,8 +42,8 @@ var Bob =
                 creep.build(targetSource);
             }
             else if (creep.memory.state == false) {
-                creep.moveTo(Game.spawns['Spawn1']);
-                creep.withdraw(Game.spawns['Spawn1'], RESOURCE_ENERGY)
+                creep.moveTo(fun.ClosestSto(creep));
+                creep.withdraw(fun.ClosestSto(creep), RESOURCE_ENERGY)
             }
         }
     }

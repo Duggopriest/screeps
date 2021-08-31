@@ -1,3 +1,4 @@
+var fun = require('fun');
 var Upg =
 {
 
@@ -26,9 +27,9 @@ var Upg =
                 creep.moveTo(targetSource);
                 creep.upgradeController(targetSource)
             }
-            else if (creep.memory.state == false && Game.spawns['Spawn1'].store.getUsedCapacity(RESOURCE_ENERGY) == 300) {
-                creep.moveTo(Game.spawns['Spawn1']);
-                creep.withdraw(Game.spawns['Spawn1'], RESOURCE_ENERGY)
+            else if (creep.memory.state == false) {
+                creep.moveTo(fun.ClosestSto(creep));
+                creep.withdraw(fun.ClosestSto(creep), RESOURCE_ENERGY);
             }
         }
 

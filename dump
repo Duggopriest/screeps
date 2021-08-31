@@ -7,3 +7,25 @@ Memory.OwnedRooms =
             name: Game.rooms['W7N1'],
        }
     };
+
+    RW7N1: Memory.NextRoom[7],
+
+
+    ---
+    if (creep)
+            {
+                var targetSource = Game.getObjectById(creep.memory.CMS);
+                Funs.Move(creep, targetSource);
+                creep.harvest(targetSource);
+                if (!Game.creeps[creep.memory.CTT])
+                    creep.memory.CTT = 'single';
+                else
+                    creep.transfer(Game.creeps[creep.memory.CTT], RESOURCE_ENERGY);
+            }
+            else 
+            {
+                creep.memory.targRm = Game.spawns['Spawn1'].room.name;
+                Funs.Move(creep, Game.spawns['Spawn1']);
+                Game.spawns['Spawn1'].renew(creep);
+                creep.say('renewing');
+            }

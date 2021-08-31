@@ -1,28 +1,27 @@
-var Harvester =
-{
-
+var Funs = require('fun');
+var Harvester = {
     /** @param {Creep} creep **/
-    run: function (creep) {
-        if (creep) {
+    run: function (creep) 
+    {
+        if (creep) 
+        {
             var targetSource = Game.getObjectById(creep.memory.CMS);
-            var harvesters = _.filter(Game.creeps, (creep) => creep.memory.role == 'harvester');
-
-            if (creep.memory.CMS != 'noTarget') 
+            //creep.say(creep.pos.getRangeTo(targetSource));
+            if (creep.pos.getRangeTo(targetSource) > 1)
             {
-                creep.moveTo(targetSource);
-                creep.harvest(targetSource);
-            }
-
-            if (!Game.creeps[creep.memory.CTT])
-            {
-                creep.memory.CTT = 'single';
+                Funs.Move(creep, targetSource);
+                creep.memory.St = 'M';
             }
             else
             {
-                creep.transfer(Game.creeps[creep.memory.CTT], RESOURCE_ENERGY);
+                creep.memory.St = 'H';
+                creep.harvest(targetSource);
+                if (!Game.creeps[creep.memory.CTT])
+                    creep.memory.CTT = 'single';
+                else
+                    creep.transfer(Game.creeps[creep.memory.CTT], RESOURCE_ENERGY);
             }
         }
     }
 };
-
 module.exports = Harvester;

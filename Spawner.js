@@ -1,5 +1,4 @@
-var Harv = require('Harvester');
-var Car = require('Car');
+var fun = require('fun');
 
 var Spawner =
 {
@@ -10,25 +9,52 @@ var Spawner =
         var newName = 'H' + a; //making a name
         for (var i = 0; i < harvesters.length; i++)
         {
-            console.log(newName + ' ' + harvesters[i].name)
+            //console.log(newName + ' ' + harvesters[i].name)
             if (harvesters[i].name == newName)
             {
-                var newName = 'H' + (harvesters.length + a);
+                var newName = 'H' + (harvesters.length + Math.floor((Math.random() * 10)));
                 a++;
                 i = 0;
             }
         }
-        //console.log('Spawning H');
-        Game.spawns['Spawn1'].spawnCreep([WORK,CARRY,CARRY,MOVE], newName, 
+        for (var i = 0; i < Memory.Sources.length; i++) {
+            if(Memory.Sources[i].harvester == 'E' || !Memory.Sources[i].harvester)
             {
-                memory:
-                {
-                    role: 'harvester',
-                    CMS: 'noTarget',
-                    CTT: 'single',
-                }
+                a = i;
+                break;
             }
-        );// gets the name of a spawn and does .spawn creep and attaches parts to it as well as a name and inserts memory.role
+        }
+        if  (fun.GTECur() <= 300 && fun.GTECur() < 400)
+        {
+            Game.spawns['Spawn1'].spawnCreep([WORK,CARRY,CARRY,MOVE], newName, 
+                {
+                    memory:
+                    {
+                        role: 'harvester',
+                        CMS: Memory.Sources[a].id,
+                        CTT: 'single',
+                        targRm: Memory.Sources[a].room,
+                    }
+                }
+            );// gets the name of a spawn and does .spawn creep and attaches parts to it as well as a name and inserts memory.role
+            Memory.Sources[a].harvester = Game.creeps[newName];
+        }
+        else
+        {
+            Game.spawns['Spawn1'].spawnCreep([WORK,WORK,CARRY,CARRY,MOVE], newName, 
+                {
+                    memory:
+                    {
+                        role: 'harvester',
+                        CMS: Memory.Sources[a].id,
+                        CTT: 'single',
+                        targRm: Memory.Sources[a].room,
+                        St: 'M',
+                    }
+                }
+            );// gets the name of a spawn and does .spawn creep and attaches parts to it as well as a name and inserts memory.role
+            Memory.Sources[a].harvester = Game.creeps[newName];
+        }
     },
 
     SpawnCar: function() 
@@ -40,21 +66,37 @@ var Spawner =
         {
             if (cars[i].name == newName)
             {
-                var newName = 'C' + (cars.length + a);
+                newName = 'C' + (cars.length + a + Math.floor((Math.random() * 10)));
                 a++;
                 i = 0;
             }
-        }  
-        //console.log('Spawning C');
-        Game.spawns['Spawn1'].spawnCreep([CARRY,CARRY,CARRY,MOVE,MOVE,MOVE], newName, 
+        }
+        if(fun.GTECur() >= 300)
+        {
+            Game.spawns['Spawn1'].spawnCreep([CARRY,CARRY,CARRY,MOVE,MOVE,MOVE], newName, 
             {
                 memory:
                 {
                     role: 'car',
-                    Following: 'single'
+                    Following: 'single',
+                    targRm: 'E'
                 }
             }
         );
+        }
+        else 
+        {
+            Game.spawns['Spawn1'].spawnCreep([CARRY,CARRY,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE,MOVE,MOVE], newName, 
+                {
+                    memory:
+                    {
+                        role: 'car',
+                        Following: 'single',
+                        targRm: 'E'
+                    }
+                }
+            );
+        }
     },
 
     SpawnBob: function() 
@@ -66,11 +108,11 @@ var Spawner =
         {
             if (bobs[i].name == newName)
             {
-                var newName = 'B' + (bobs.length + (a + 1))
+                var newName = 'B' + (bobs.length + Math.floor((Math.random() * 10)))
                 i = 0;
             }
         }   
-        Game.spawns['Spawn1'].spawnCreep([WORK,WORK,CARRY,MOVE], newName, 
+        Game.spawns['Spawn1'].spawnCreep([WORK,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE], newName, 
             {
                 memory:
                 {
@@ -90,20 +132,36 @@ var Spawner =
         {
             if (reps[i].name == newName)
             {
-                var newName = 'R' + (reps.length + (a + 1))
+                var newName = 'R' + (reps.length + Math.floor((Math.random() * 10)))
                 i = 0;
             }
-        }   
-        Game.spawns['Spawn1'].spawnCreep([WORK,WORK,CARRY,MOVE], newName, 
-            {
-                memory:
+        }
+        if(fun.GTECur() < 310)
+        {
+            Game.spawns['Spawn1'].spawnCreep([WORK,CARRY,CARRY,MOVE,MOVE], newName, 
                 {
-                    role: 'rep',
-                    state: false,
-                    CMS: 'noTarget'
+                    memory:
+                    {
+                        role: 'rep',
+                        state: false,
+                        CMS: 'noTarget'
+                    }
                 }
-            }
-        );
+            );
+        }
+        else
+        {
+            Game.spawns['Spawn1'].spawnCreep([WORK,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE], newName, 
+                {
+                    memory:
+                    {
+                        role: 'rep',
+                        state: false,
+                        CMS: 'noTarget'
+                    }
+                }
+            );
+        }
     },
     SpawnUpg: function() 
     {
@@ -118,7 +176,7 @@ var Spawner =
                 i = 0;
             }
         }   
-        Game.spawns['Spawn1'].spawnCreep([WORK,CARRY,MOVE,MOVE], newName, 
+        Game.spawns['Spawn1'].spawnCreep([WORK,CARRY,CARRY,MOVE,MOVE], newName, 
             {
                 memory:
                 {
@@ -138,7 +196,7 @@ var Spawner =
         {
             if (RM[i].name == newName)
             {
-                var newName = 'RM' + (RM.length + (a + 1))
+                var newName = 'RM' + (RM.length + Math.floor((Math.random() * 10)))
                 i = 0;
             }
         }   
@@ -157,24 +215,22 @@ var Spawner =
     SpawnScanner: function() 
     {
         var a = 1;
-        var scanners = _.filter(Game.creeps, (creep) => creep.memory.role == 'Scanner');
-        var newName = 'Scanner' + (RM.length + 1);
-        for (var i = 0; i < scanners.length; i++)
+        var scan = _.filter(Game.creeps, (creep) => creep.memory.role == 'scanners');
+        var newName = 'S' + (scan.length + 1);
+        for (var i = 0; i < (scan.length); i++)
         {
-            if (scanners[i].name == newName)
+            if (scan[i].name == newName)
             {
-                var newName = 'Scanner' + (scanners.length + (a + 1))
+                newName = 'S' + (scan.length + Math.floor((Math.random() * 10)))
+                a += 2;
                 i = 0;
             }
-        }   
+        }  
         Game.spawns['Spawn1'].spawnCreep([MOVE], newName, 
             {
                 memory:
                 {
                     role: 'scanners',
-                    state: false,
-                    Sources: 'E',
-                    Harvesters: 'E',
                     targRm: 'E',
                 }
             }
